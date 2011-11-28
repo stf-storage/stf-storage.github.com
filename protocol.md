@@ -20,17 +20,17 @@ STF (whose name derives from a pro-wrestling maneuver) is a distribute object st
 
 * Bucket
 
-A bucket is a logical group of objects. A bucket must exist prior to storing an object.
+    A bucket is a logical group of objects. A bucket must exist prior to storing an object.
 
 * Entity
 
-An entity represents a physical copy of an object. While an object is a logical representation of a file/data, an object may be (and usually is) associated with multiple entities in order to ensure that the data exists.
+    An entity represents a physical copy of an object. While an object is a logical representation of a file/data, an object may be (and usually is) associated with multiple entities in order to ensure that the data exists.
 
-Entities are sometimes referred to as "replicas".
+    Entities are sometimes referred to as "replicas".
 
 * Dispatcher
 
-A dispatcher is the client-facing server which clients interact with. A dispatcher will handles client connections, talk to the backend storages, and serve the necessary data.
+    A dispatcher is the client-facing server which clients interact with. A dispatcher will handles client connections, talk to the backend storages, and serve the necessary data.
 
 * Storage
 
