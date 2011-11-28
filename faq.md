@@ -11,7 +11,7 @@ STF stands for "<a href="http://en.wikipedia.org/wiki/Professional_wrestling_hol
 
 ## Who runs STF ?
 
-<a href="http://www.livedoor.com">Livedoor</a> heavily uses STF to store image files for its blog, photo storage, and other services.
+Livedoor heavily uses STF to store image files for its blog, photo storage, and other services.
 
 ## How is it different from MogileFS?
 
