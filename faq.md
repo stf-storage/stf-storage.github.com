@@ -11,7 +11,7 @@ STF stands for "<a href="http://en.wikipedia.org/wiki/Professional_wrestling_hol
 
 ## Who runs STF ?
 
-Livedoor heavily uses STF to store image files for its blog, photo storage, and other services.
+Livedoor heavily uses STF to store image files for its blog, photo storage, and other services. Throughout Livedoor, STF handles about 400 million objects (1.3 billion entities) totaling around 70TB of disk space.
 
 ## How is it different from MogileFS?
 
