@@ -17,3 +17,4 @@ Livedoor heavily uses STF to store image files for its blog, photo storage, and 
 
 The basic idea is the same. The main difference is that STF by default speaks HTTP and is a PSGI webapp.
 
+STF is also a lot smaller than MogileFS, so you it's a bit easier to read. As of this writing, MogileFS has about 28000+ LOC and STF has about 6000+ LOC. STF runs on plain boring synchronous codebase, so the code flow is a lot simpler.
