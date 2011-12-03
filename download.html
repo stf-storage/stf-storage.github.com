@@ -10,7 +10,7 @@ layout: default
 <div class="page-header">
     <h2>STF</h2>
 </div>
-<div class="row" style="margin-bottom: 10px">
+<div class="row" style="margin-bottom: 2em">
 <div class="span12">
     <p>STF is the reference implementation. Written in Perl, it serves billions of objects on commodity servers</p>
     <p>TODO: Create a carton-bundled, ready to run tarball</p>
@@ -29,14 +29,27 @@ layout: default
 <div class="page-header">
     <h2>STF::Dispatcher::PSGI</h2>
 </div>
-<div class="row">
+<div class="row" style="margin-bottom: 2em">
 <div class="span12">
     <p>STF::Dispatcher::PSGI implements the STF <em>interface</em>. While <a href="/protocol.html">the protocol</a> is mainly simple HTTP, there are a few things you need to parse from the HTTP requests. They are simple enough, but annoying to have to reimplement every time you want to create a new STF server or a dummy STF server for testing. This module abstracts that part away.</p>
     <p>It also comes with STF::Dispatcher::Test, which does the basic interface testing.</p>
-    <ul>
-        <li><span class="btn danger">github</span> <a href="https://github.com/stf-storage/stf-dispatcher-psgi">https://github.com/stf-storage/stf-dispatcher-psgi</a></li>
-        <li><span class="btn danger">CPAN</span> <a href="http://metacpan.org/dist/STF-Dispatcher-PSGI">STF-Dispatcher-PSGI</a></li>
-    </ul>
+
+    <div class="row">
+        <div class="span2" style="text-align: right">
+            <span class="btn danger">github</span>
+        </div>
+        <div class="span10">
+            <a href="https://github.com/stf-storage/stf-dispatcher-psgi">https://github.com/stf-storage/stf-dispatcher-psgi</a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2" style="text-align: right">
+            <span class="btn danger">CPAN</span>
+        </div>
+        <div class="span10">
+            <a href="http://metacpan.org/dist/STF-Dispatcher-PSGI">STF-Dispatcher-PSGI</a>
+        </div>
+    </div>
 </div>
 </div>
 
