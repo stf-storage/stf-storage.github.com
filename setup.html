@@ -30,33 +30,49 @@ layout: default
 </div>
 </div>
 
+<div class="page-header">
+    <h2 id="queue">Job Queues</h2>
+</div>
 <div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2 id="queue">Job Queues</h2>
+    <div class="span2">
+        <h3>Overview</h3>
     </div>
-    <p>STF uses a queue to communicate with the backend workers. You can currently choose between Q4M and TheSchwartz for this. For very high-load systems, you may want to choose Q4M (but I'm only saying that because I haven't used TheSchwartz in a real production STF deployment)</p>
-    <h3 id="q4m">Q4M</h3>
-    <p>Q4M (<a href="http://q4m.github.com">http://q4m.github.com</a>) is a MySQL storage engine that allows you to use it as a fast, robust queue.</p>
-    <p>To install Q4M, you need to have MySQL 5.1 available (if you're installing Q4M from source, you will also need the MySQL source code).</p>
-    <p>The Q4M instance typically requires much less resources than the main backend MySQL DB, so unless your traffic is extremely large it can be hosted in the same machine as other services (see diagram in "Typical Setup")</p>
-    <p>Once you have a Q4M server running, create a new database and set it up using stf_queue.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf_q4m.sql">https://github.com/stf-storage/stf/misc/stf_q4m.sql</a>)</p>
+    <div class="span10">
+        <p>STF uses a queue to communicate with the backend workers. You can currently choose between Q4M and TheSchwartz for this. For very high-load systems, you may want to choose Q4M (but I'm only saying that because I haven't used TheSchwartz in a real production STF deployment)</p>
+    </div>
+</div>
+<div class="row">
+    <div class="span2">
+        <h3 id="q4m">Q4M</h3>
+    </div>
+    <div class="span10">
+        <p>Q4M (<a href="http://q4m.github.com">http://q4m.github.com</a>) is a MySQL storage engine that allows you to use it as a fast, robust queue.</p>
+        <p>To install Q4M, you need to have MySQL 5.1 available (if you're installing Q4M from source, you will also need the MySQL source code).</p>
+        <p>The Q4M instance typically requires much less resources than the main backend MySQL DB, so unless your traffic is extremely large it can be hosted in the same machine as other services (see diagram in "Typical Setup")</p>
+        <p>Once you have a Q4M server running, create a new database and set it up using stf_queue.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf_q4m.sql">https://github.com/stf-storage/stf/misc/stf_q4m.sql</a>)</p>
+    </div>
+    <hr />
+</div>
 
-    <h3 id="schwartz">TheSchwartz</h3>
-    <p>TheSchwartz (<a href="http://metacpan.org/release/TheSchwartz">CPAN</a>) is a Job Queue written by Six Apart Ltd., which uses MySQL as its backend. Unlike Q4M, TheSchwartz does not require you to install a custom storage engine, so if you can't install Q4M, this may be a good choice for you.</p>
-    <p>To install TheSchwartz, simply install it from CPAN:</p>
-    <pre><a href="https://metacpan.org/module/cpanm">cpanm</a> TheSchwartz</pre>
-    <p>Once you have installed TheSchartz, create a new database and set it up using stf_schwartz.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf_schwartz.sql">https://github.com/stf-storage/stf/misc/stf_schwartz.sql</a>)</p>
-    <p>You also need to tell your workers and your dispatchers that you're using TheSchwartz as your backend by setting STF_QUEUE_TYPE to "Schwartz":</p>
-    <pre>
+<div class="row">
+    <div class="span2">
+        <h3 id="schwartz">TheSchwartz</h3>
+    </div>
+    <div class="span10">
+        <p>TheSchwartz (<a href="http://metacpan.org/release/TheSchwartz">CPAN</a>) is a Job Queue written by Six Apart Ltd., which uses MySQL as its backend. Unlike Q4M, TheSchwartz does not require you to install a custom storage engine, so if you can't install Q4M, this may be a good choice for you.</p>
+        <p>To install TheSchwartz, simply install it from CPAN:</p>
+        <pre><a href="https://metacpan.org/module/cpanm">cpanm</a> TheSchwartz</pre>
+        <p>Once you have installed TheSchartz, create a new database and set it up using stf_schwartz.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf_schwartz.sql">https://github.com/stf-storage/stf/misc/stf_schwartz.sql</a>)</p>
+        <p>You also need to tell your workers and your dispatchers that you're using TheSchwartz as your backend by setting STF_QUEUE_TYPE to "Schwartz":</p>
+        <pre>
 export STF_QUEUE_TYPE=Schwartz
 plackup -a dispatcher.psgi
 </pre>
-    <p>and</p>
-    <pre>
+        <p>and</p>
+        <pre>
 ./bin/stf-worker
 </pre>
-</div>
+    </div>
 </div>
 
 <div class="page-header">
