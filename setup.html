@@ -196,5 +196,103 @@ plackup -a /path/to/dispatcher.psgi
 </div>
 </section>
 
+<div class="page-header">
+    <h2>Environment Variables</h2>
+</div>
+<div class="row">
+<div class="span12">
+    <table class="zebra-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Applies to</th>
+            <th>Default Value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>STF_HOME</td>
+            <td>All</td>
+            <td>Current Directory</td>
+            <td>Path to the STF installation</td>
+        </tr>
+        <tr>
+            <td>STF_DEBUG</td>
+            <td>All</td>
+            <td>false</td>
+            <td>Set to 1 if you would like to see debug output from STF</td>
+        </tr>
+        <tr>
+            <td>STF_TIMER</td>
+            <td>All</td>
+            <td>false</td>
+            <td>Set to 1 if you would like to see timers measuring STF performance</td>
+        </tr>
+        <tr>
+            <td>STF_HOST_ID</td>
+            <td>Dispatcher</td>
+            <td>(null)</td>
+            <td>The UNIQUE host id for each dispatcher. This is used to generate a unique ID for buckets and objects, so you MUST provide a unique inter value for each of your dispatchers. If you don't specify it in your config.pl this variable is <strong>required</strong></td>
+        </tr>
+        <tr>
+            <td>STF_NGINX_STYLE_PROXY</td>
+            <td>Dispatcher</td>
+            <td>false</td>
+            <td>When set to a true value, will include X-Accel-Redirect HTTP header in the dispatcher response for GET requests.</td>
+        </tr>
+        <tr>
+            <td>STF_NGINX_STYLE_PROXY_ACCEL_REDIRECT_URL</td>
+            <td>Dispatcher</td>
+            <td>/reproxy</td>
+            <td>The URL that is configured to process the reproxying.</td>
+        </tr>
+        <tr>
+            <td>STF_MYSQL_DSN</td>
+            <td>Dispatcher/Worker</td>
+            <td>dbi:mysql:dbname=stf_queue</td>
+            <td>DBI-style connect string for your MySQL (main) database.</td>
+        </tr>
+        <tr>
+            <td>STF_MYSQL_USERNAME</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style username for your MySQL (main) database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_MYSQL_PASSWORD</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style password for your MySQL (main) database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_TYPE</td>
+            <td>Dispatcher/Worker</td>
+            <td>Q4M</td>
+            <td>The type of job queue to use. By default Q4M is used. specify "Schwartz" to use TheSchwartz. See also: STF_QUEUE_DSN, STF_QUEUE_USERNAME, STF_QUEUE_PASSWORD</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_DSN</td>
+            <td>Dispatcher/Worker</td>
+            <td>dbi:mysql:dbname=stf_queue</td>
+            <td>DBI-style connect string for your queue database.</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_USERNAME</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style username for your queue database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_PASSWORD</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style password for your queue database (maybe omitted if specified in DSN).</td>
+        </tr>
+    </div>
+</div>
+
+
+
 </div>
 
