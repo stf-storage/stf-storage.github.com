@@ -171,7 +171,20 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="page-header">
-    <h2 id="storage">Storage</h2>
+    <h2 id="memcached">Memcached</h2>
+</div>
+<div class="row">
+    <div class="span2">
+        <span class="subh">Overview</span>
+    </div>
+    <div class="span10">
+        <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
+        <p>Simply start as many instances as you can, and list the server:port values in the Memcached section of config.pl</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="storage">STF Storage</h2>
 </div>
 <div class="row">
     <div class="span2">
@@ -186,19 +199,6 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 export STF_STORAGE_ROOT=/path/to/storage
 plackup -a $STF_HOME/etc/storage.psgi
 </pre>
-    </div>
-</div>
-
-<div class="page-header">
-    <h2 id="memcached">Memcached</h2>
-</div>
-<div class="row">
-    <div class="span2">
-        <span class="subh">Overview</span>
-    </div>
-    <div class="span10">
-        <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
-        <p>Simply start as many instances as you can, and list the server:port values in the Memcached section of config.pl</p>
     </div>
 </div>
 
@@ -218,7 +218,7 @@ plackup -a $STF_HOME/etc/storage.psgi
         <p>If you provide your own config script, be sure to check out what environment variables you're using -- the environment variables described in this document assumes that you're using the default config.pl file</p>
 
         <p>If you're using the default config.pl, you only should need to change a few values:</p>
-        <h4>DB::Master / DB::Slave</h4>
+        <h4>DB::Master</h4>
         <pre>
 'DB::Master' =&gt; [
     $dsn,
