@@ -127,16 +127,25 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 </div>
 
+<section id="dispatcher">
+<div class="page-header">
+    <h2>STF Dispatcher</h2>
+</div>
 <div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>STF Dispatcher</h2>
+    <div class="span4"><h3>Overview</h3></div>
+    <div class="span10">
+        <p>The STF dispatcher needs to be configured so that it knows what kind of environment it's running in. All configuration is ultimately in a configuration file, but certain switches that you might want to toggle on/off easily can be specified via environment variables (you can control how this is reflected if you provide your own config script, though. see below)</p>
     </div>
-    <p>The STF dispatcher can be configure using a regular Perl script, which can be specified either in STF::Context's constructor code, or by setting the STF_CONFIG environmental variable. If you don't specify anything, the value "etc/config.pl" will be used</p>
-    <p>You only should need to change a few values:</p>
+</div>
+<div class="row">
+    <div class="span4"><h3>config.pl</h3></div>
+    <div class="span10">
+        <p>The configuration is stored in a regular Perl script file. By default <a href="https://github.com/stf-storage/stf/blob/master/etc/config.pl">etc/config.pl</a> is used. The default config.pl provided with STF should be enough for most purposes, but you can always customize it however you like -- it's just a Perl script!</p>
+        <p>If you provide your own config script, be sure to check out what environment variables you're using -- the environment variables described in this document assumes that you're using the default config.pl file</p>
 
-    <h3>DB::Master / DB::Slave</h3>
-    <pre>
+        <p>If you're using the default config.pl, you only should need to change a few values:</p>
+        <h3>DB::Master / DB::Slave</h3>
+        <pre>
 'DB::Master' =&gt; [
     $dsn,
     $username,
@@ -144,23 +153,28 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     \%options,
 ]
 </pre>
-    <p>This value should be filled with a list of parameters that tells us how to connect to the STF database. Normally you only need to change $dsn, $username, and $password. See <a href="https://github.com/stf-storage/stf/tree/master/etc/config.pl">etc/config.pl</a> for a sample. If you want to customize further, please read the documentation for <a href="http://metacpan.org/dist/DBI">DBI.pm</a></p>
+        <p>This value should be filled with a list of parameters that tells us how to connect to the STF database. Normally you only need to change $dsn, $username, and $password. See <a href="https://github.com/stf-storage/stf/tree/master/etc/config.pl">etc/config.pl</a> for a sample. If you want to customize further, please read the documentation for <a href="http://metacpan.org/dist/DBI">DBI.pm</a></p>
 
-    <h3>DB::Queue</h3>
-    <p>This value should be filled with a list of parameters that tells us how to connect to the STF Q4M instance. See DB::Master section above.</p>
-    <h3>Memcached</h3>
-    <pre>
+        <h3>DB::Queue</h3>
+        <p>This value should be filled with a list of parameters that tells us how to connect to the STF Q4M instance. See DB::Master section above.</p>
+
+        <h3>Memcached</h3>
+        <pre>
 'Memcached' =&gt; {
     servers =&gt; \@list_of_servers,
     ... other ...
 }
 </pre>
-    <p>This specifies the Memcached servers to store your data. The values in this section are directly passed to <a href="http://metacpan.org/release/Cache-Memcached-Fast">Cache::Memcached::Fast</a>. Please see the documentation for detaills</p>
+        <p>This specifies the Memcached servers to store your data. The values in this section are directly passed to <a href="http://metacpan.org/release/Cache-Memcached-Fast">Cache::Memcached::Fast</a>. Please see the documentation for detaills</p>
+    </div>
+</div>
 
-    <h3>Firing it up</h3>
-
-    <p>Here's how you might start the dispatcher, along with some environment variables that you need to setup.</p>
-    <pre>
+<div class="row">
+    <div class="span4"><h3>config.pl</h3></div>
+    <div class="span10">
+        <h3>Firing it up</h3>
+        <p>Here's how you might start the dispatcher, along with some environment variables that you need to setup.</p>
+        <pre>
 # any integer value. must be unique for each dispatcher
 # you don't need to set this if you edited your config.pl to include this value
 # in Dispatcher.host_id field.
@@ -179,7 +193,9 @@ export STF_HOST_ID=101
 
 plackup -a /path/to/dispatcher.psgi
 </pre>
-
+    </div>
 </div>
+</section>
+
 </div>
 
