@@ -28,10 +28,10 @@ layout: default
             </ul>
         </li>
         <li><a href="#dispatcher-proxy">Dispatcher Proxy</a></li>
-        <li><a href="#workers">Workers</a></li>
-        <li><a href="#storage">Storage</a></li>
         <li><a href="#memcached">Memcached</a></li>
-        <li><a href="#dispatcher">Dispatcher</a></li>
+        <li><a href="#workers">STF Workers</a></li>
+        <li><a href="#storage">STF Storage</a></li>
+        <li><a href="#dispatcher">STF Dispatcher</a></li>
         <li><a href="#environment">Environment Variables</a></li>
     </ul>
     </div>
@@ -160,17 +160,6 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="page-header">
-    <h2 id="workers">Workers</h2>
-</div>
-<div class="row">
-    <div class="span12">
-        <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
-        <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
-        <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
-    </div>
-</div>
-
-<div class="page-header">
     <h2 id="memcached">Memcached</h2>
 </div>
 <div class="row">
@@ -180,6 +169,17 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     <div class="span10">
         <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
         <p>Simply start as many instances as you can, and list the server:port values in the Memcached section of config.pl</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="workers">STF Workers</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
+        <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
+        <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
     </div>
 </div>
 
