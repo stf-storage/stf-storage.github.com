@@ -1,0 +1,188 @@
+---
+title: Protocol
+layout: default
+---
+
+<div class="page-header">
+    <h1>STF Protocol</h1>
+</div>
+
+<div class="page-header">
+    <h2>About</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>This document describes STF Protocol (as Of Dec 1, 2011)</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2>Terminology</h2>
+</div>
+<div class="row">
+<div class="span12">
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Object</span>
+        </div>
+        <div class="span10">
+            <p>An object is, from the client's perspective, a file or a piece of data, which is associated with a particular object URL.</p>
+            <p>An object MUST belong to a bucket.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Bucket</span>
+        </div>
+        <div class="span10">
+            <p>A bucket is a logical group of objects. A bucket must exist prior to storing an object.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Entity</span>
+        </div>
+        <div class="span10">
+            <p>An entity represents a physical copy of an object. While an object is a logical representation of a file/data, an object may be (and usually is) associated with multiple entities in order to ensure that the data exists.</p>
+            <p>Entities are sometimes referred to as "replicas".</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Dispatcher</span>
+        </div>
+        <div class="span10">
+            <p>A dispatcher is the client-facing server which clients interact with. A dispatcher will handles client connections, talk to the backend storages, and serve the necessary data.</p>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Storage</span>
+        </div>
+        <div class="span10">
+            <p>A storage is a device which stores entities. It must be able to communicate with the dispatcher via HTTP, and handle GET/PUT/DELETE requests</p>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="page-header">
+    <h2>Client Protocol</h2>
+</div>
+<div class="row">
+<div class="span12">
+    <p>Here we describe the client protocol.</p>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Create a Bucket</span>
+        </div>
+        <div class="span10">
+            <p>To create a bucket, an HTTP PUT request should be sent.</p>
+            <pre>
+PUT /mybucket HTTP/1.0
+</pre>
+            <p>If the bucket is successfully created, HTTP Status 201 is returned.</p>
+            <p>If the bucket already exists, HTTP Status 204 is returned.</p>
+            <p>If the bucket name cannot be parse (or maybe you specified /bucket_name/object_name instead of /bucket_name), then HTTP Status 400 is returned.</p>
+            <p>If the were any other errors HTTP Status 500 is returned.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Delete a Bucket</span>
+        </div>
+        <div class="span10">
+            <p>To delete a bucket, an HTTP DELETE request should be sent.</p>
+            <pre>
+DELETE /mybucket HTTP/1.0
+... optional headers ...
+</pre>
+            <p>Optional headers are:</p>
+            <table>
+            <tbody>
+                <tr>
+                    <td><strong>X-STF-Recursive-Delete</strong></td>
+                    <td> 
+                        <p>If set, the bucket AND objects related to this bucket are deleted.</p>
+                        <p>If unspecified, the bucket is deleted but the objects and entities are left alone.</p>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+
+            <p>Upon successful deletion, HTTP Status 204 is returned.</p>
+            <p>If the bucket does not exist, HTTP Status 404 is returned.</p>
+            <p>If the were any other errors HTTP Status 500 is returned.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Create an Object</span>
+        </div>
+        <div class="span10">
+            <p>To create an object, an HTTP PUT request should be sent.</p>
+            <pre>
+PUT /mybucket/foo/bar/baz/myobject.png HTTP/1.0
+Content-Length: 9153
+... optional headers ....
+
+... object data ....
+</rep>
+            <p>The URL must be in the form <strong>/bucket_name/object_name</strong>. The object's content is sent in the HTTP request body.</p>
+            <p>Optional headers may be one of the following:</p>
+            <table>
+            <tbody>
+                <tr>
+                    <td><strong>X-STF-Replication-Count</strong></td>
+                    <td>
+                        <p>Specifies the number of entities that this object should have.</p>
+                        <p>Note that upon a successful object creation, you're not guaranteed to have this many entities in the storage: STF creates a minimal number of entities first, then asks the backend worker to create the remaining entities.</p>
+                        <p>To control the number of object being created upon the initial object creation, see the X-STF-Consistency header.</p>
+                    </td>
+                </tr>
+                <tr>
+                    <td><strong>X-STF-Consistency</strong></td>
+                    <td>
+                        <p>Specifies the number of entities that must be created for this request.</p>
+                        <p>If the dispatcher fails to create this many entities during the HTTP request, the entire operation is considered to have failed.</p>
+                        <p>You may increase the number of replicas as much as you like, but note that increasing this number makes each object creation request take much longer to complete. It is recommended that you keep this value relatively low.</p>
+                    </td>
+                </tr>
+            </tbody>
+            </table>
+            <p>Upon successful object creation, HTTP Status 201 is returned</p>
+            <p>If the specified bucket does not exist, HTTP Status 500 is returned.</p>
+            <p>If the object_name could not be parsed, HTTP STatus 400 is returned</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Retrieve an Object</span>
+        </div>
+        <div class="span10">
+            <p>To retrieve an object, a GET request should be sent.</p>
+            <pre>
+GET /mybucket/foo/bar/baz/myobject.png HTTP/1.0
+... optional headers ...
+</pre>
+            <p>If-Modified-Since headers are respected.</p>
+            <p>You may also use HEAD if you only want to check if the object exists.</p>
+            <p>Upon successful retrieval, HTTP Status 200 and the content of the object is returned.</p>
+            <p>If the specified bucket does not exist, HTTP Status 500 is returned.</p>
+        </div>
+    </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Modify an Object</span>
+        </div>
+        <div class="span10">
+            <p>To modify an object, a POST request should be sent.</p>
+            <pre>
+POST /mybucket/foo/bar/baz/myobject.png HTTP/1.0
+... optional headers ...
+</pre>
+            <p>Upon successful retrieval, HTTP Status 204 is returned.</p>
+            <p>If the specified bucket does not exist, HTTP Status 500 is returned.</p>
+        </div>
+    </div>
+</div>
+</div>
