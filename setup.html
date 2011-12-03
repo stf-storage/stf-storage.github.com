@@ -138,13 +138,23 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 </div>
 
-<div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>Storage</h2>
-    </div>
-    <p>Storages are just dumb HTTP servers that understand basic CRUD via HTTP GET, PUT, DELETE. STF provides you with a simple PSGI app to handle this, but if you happen to find that this is not enough, you can choose to build your own equivalent. It's not that hard.</p>
+<div class="page-header">
+    <h2>Storage</h2>
 </div>
+<div class="row">
+    <div class="span2">
+        <h3>Overview</h3>
+    </div>
+
+    <div class="span10">
+        <p>Storages are just dumb HTTP servers that understand basic CRUD via HTTP GET, PUT, DELETE. STF provides you with a simple PSGI app to handle this, but if you happen to find that this is not enough, you can choose to build your own equivalent. It's not that hard.</p>
+
+        <p>STF comes with a simple storage app you can easily deploy:</p>
+        <pre>
+export STF_STORAGE_ROOT=/path/to/storage
+plackup -a $STF_HOME/etc/storage.psgi
+</pre>
+    </div>
 </div>
 
 <div class="row">
@@ -317,6 +327,12 @@ plackup -a /path/to/dispatcher.psgi
             <td>Dispatcher/Worker</td>
             <td>root</td>
             <td>DBI-style password for your queue database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_STORAGE_ROOT</td>
+            <td>Storage</td>
+            <td>(null)</td>
+            <td>The root directory where files should be stored. Required.</td>
         </tr>
     </table>
 </div>
