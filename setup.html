@@ -185,8 +185,12 @@ plackup -a $STF_HOME/etc/storage.psgi
     <h2 id="memcached">Memcached</h2>
 </div>
 <div class="row">
-    <div class="span12">
+    <div class="span2">
+        <span style="font-weight:bold">Overview</span>
+    </div>
+    <div class="span10">
         <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
+        <p>Simply start as many instances as you can, and list the server:port values in the Memcached section of config.pl</p>
     </div>
 </div>
 
