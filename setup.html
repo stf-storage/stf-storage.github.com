@@ -132,13 +132,13 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     <h2>STF Dispatcher</h2>
 </div>
 <div class="row">
-    <div class="span4"><h3>Overview</h3></div>
+    <div class="span2"><h3>Overview</h3></div>
     <div class="span10">
         <p>The STF dispatcher needs to be configured so that it knows what kind of environment it's running in. All configuration is ultimately in a configuration file, but certain switches that you might want to toggle on/off easily can be specified via environment variables (you can control how this is reflected if you provide your own config script, though. see below)</p>
     </div>
 </div>
 <div class="row">
-    <div class="span4"><h3>config.pl</h3></div>
+    <div class="span2"><h3>config.pl</h3></div>
     <div class="span10">
         <p>The configuration is stored in a regular Perl script file. By default <a href="https://github.com/stf-storage/stf/blob/master/etc/config.pl">etc/config.pl</a> is used. The default config.pl provided with STF should be enough for most purposes, but you can always customize it however you like -- it's just a Perl script!</p>
         <p>If you provide your own config script, be sure to check out what environment variables you're using -- the environment variables described in this document assumes that you're using the default config.pl file</p>
@@ -170,9 +170,8 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="row">
-    <div class="span4"><h3>config.pl</h3></div>
+    <div class="span2"><h3>Firing it up</h3></div>
     <div class="span10">
-        <h3>Firing it up</h3>
         <p>Here's how you might start the dispatcher, along with some environment variables that you need to setup.</p>
         <pre>
 # any integer value. must be unique for each dispatcher
