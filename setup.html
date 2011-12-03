@@ -7,19 +7,41 @@ layout: default
     <h1>Setting Up STF</h1>
 </div>
 
+<h2>Table of Contents</h2>
 <div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>Typical Setup</h2>
-    </div>
-    <ul class="media-grid">
-    <li><img class="thumbnail" src="stf-setup.png" width="400" height="300"/></li>
+    <div class="span12">
+    <ul>
+        <li><a href="#typical">Typical Setup</a></li>
+        <li><a href="#mysql">MySQL</a></li>
+        <li><a href="#queue">Job Queue</a>
+            <ul>
+                <li><a href="#q4m">Q4M</a></li>
+                <li><a href="#schwartz">TheSchwartz</a></li>
+            </ul>
+        </li>
+        <li><a href="#dispatcher-proxy">Dispatcher Proxy</a></li>
+        <li><a href="#workers">Workers</a></li>
+        <li><a href="#storage">Storage</a></li>
+        <li><a href="#memcached">Memcached</a></li>
+        <li><a href="#dispatcher">Dispatcher</a></li>
+        <li><a href="#environment">Environment Variables</a></li>
     </ul>
-</div>
+    </div>
 </div>
 
 <div class="page-header">
-    <h2>MySQL</h2>
+    <h2 id="typical">Typical Setup</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <ul class="media-grid">
+            <li><a href="#"><img class="thumbnail" src="stf-setup.png" width="400" height="300"/></a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="mysql">MySQL</h2>
 </div>
 <div class="row">
     <div class="span12">
@@ -30,7 +52,7 @@ layout: default
 </div>
 
 <div class="page-header">
-    <h2 id="queue">Job Queues</h2>
+    <h2 id="queue">Job Queue</h2>
 </div>
 <div class="row">
     <div class="span2">
@@ -74,7 +96,7 @@ plackup -a dispatcher.psgi
 </div>
 
 <div class="page-header">
-    <h2>Dispatcher Proxy</h2>
+    <h2 id="dispatcher-proxy">Dispatcher Proxy</h2>
 </div>
 <div class="row">
     <div class="span2">
@@ -127,19 +149,19 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     </div>
 </div>
 
-<div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>Workers</h2>
-    </div>
-    <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
-    <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
-    <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
+<div class="page-header">
+    <h2 id="workers">Workers</h2>
 </div>
+<div class="row">
+    <div class="span12">
+        <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
+        <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
+        <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
+    </div>
 </div>
 
 <div class="page-header">
-    <h2>Storage</h2>
+    <h2 id="storage">Storage</h2>
 </div>
 <div class="row">
     <div class="span2">
@@ -157,18 +179,17 @@ plackup -a $STF_HOME/etc/storage.psgi
     </div>
 </div>
 
-<div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>Memcached</h2>
-    </div>
-    <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
+<div class="page-header">
+    <h2 id="memcached">Memcached</h2>
 </div>
+<div class="row">
+    <div class="span12">
+        <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
+    </div>
 </div>
 
-<section id="dispatcher">
 <div class="page-header">
-    <h2>STF Dispatcher</h2>
+    <h2 id="dispatcher">STF Dispatcher</h2>
 </div>
 <div class="row">
     <div class="span2"><h3>Overview</h3></div>
@@ -233,10 +254,9 @@ plackup -a /path/to/dispatcher.psgi
 </pre>
     </div>
 </div>
-</section>
 
 <div class="page-header">
-    <h2>Environment Variables</h2>
+    <h2 id="environment">Environment Variables</h2>
 </div>
 <div class="row">
 <div class="span12">
