@@ -34,9 +34,38 @@ layout: default
 
 <div class="row">
 <div class="span12">
-    <h2>Dispatcher Proxy (Apache + mod_reproxy)</h2>
-    <p>STF currently relies on reproxying via X-Reproxy-URL. Apache does not come with this feature, so we use an add-on called mod_reproxy. You may choose to yse other proxies. If you do, please let us know how it worked out!</p>
-    <p>On each of the dispatchers, install Apache 2.2.x and mod_proxy. The mod_reproxy we use is <a href="https://github.com/lestrrat/mod_reproxy">my forked version to work with HEAD requests</a>, which in turn is based on <a href="http://github.com/kazuho/mod_reproxy">Kazuho Oku's original version</a>.</p>
+    <h2>Dispatcher Proxy</h2>
+    <p>STF currently relies on reproxying via X-Reproxy-URL, so you need to setup an HTTP proxy server for the dispatcher. Any proxy that can handle X-Reproxy-URL should do, but currently we only use Apache (with mod_reproxy) in production, and there is a version that runs on <a href="http://dotcloud.com">dotCloud</a>, <a href="https://github.com/stf-storage/stf-on-cloud">stf-on-cloud</a>, which uses nginx.</p>
+
+    <h3>Apache</h3>
+    <p>Apache does not come with X-Reproxy-URL support. You need to install <a href="https://github.com/lestrrat/mod_reproxy">mod_reproxy</a> (which is in turn based on <a href="http://github.com/kazuho/mod_reproxy">Kazuho Oku's original version</a>)</p>
+    <p>Enable your proxy, and also set the ReproxyIgnoreHeader directive, because mod_reproxy don't support chunked encoding at the moment</p>
+    <pre><code>
+    Reproxy on
+    ReproxyIgnoreHeader Accept-Ranges
+</code></pre>
+    <p>Please see <a href="https://github.com/stf-storage/stf/blob/master/misc/apache-dispatcher-proxy.sample.conf">the sample config file</a> for more details</p>
+
+    <h3>nginx</h3>
+    <p>nginx doesn't support X-Reproxy-URL natively, but it's very easy to emulate it. Simply place a config like the following in your config.</p>
+    <pre><code>
+    location = "/reproxy" {
+        internal;
+        resolver xxx.xxx.xxx.xxx; # set up a proper resolver
+        set $reproxy $upstream_http_x_reproxy_url;
+        proxy_pass $reproxy;
+    }
+</code></pre>
+    <p>You also need to set the following environemnt variables for your dispatcher:</p>
+    <pre><code>
+        # enables X-Accel-Redirect header
+        STF_NGINX_STYLE_REPROXY: 1
+
+        # sets the internal redirect url. should match what you put in
+        # in your nginx.conf. If you configured it to be "/reproxy",
+        # then you don't need to set it.
+        STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
+</code></pre>
 </div>
 </div>
 
@@ -60,6 +89,60 @@ layout: default
 <div class="span12">
     <h2>Memcached</h2>
     <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
+</div>
+</div>
+
+<div class="row">
+<div class="span12">
+    <h2>STF Dispatcher</h2>
+    <p>The STF dispatcher can be configure using a regular Perl script, which can be specified either in STF::Context's constructor code, or by setting the STF_CONFIG environmental variable. If you don't specify anything, the value "etc/config.pl" will be used</p>
+    <p>You only should need to change a few values:</p>
+
+    <h3>DB::Master / DB::Slave</h3>
+    <pre>
+'DB::Master' =E<gt> [
+    $dsn,
+    $username,
+    $passsword,
+    \%options,
+]
+</pre>
+    <p>This value should be filled with a list of parameters that tells us how to connect to the STF database. Normally you only need to change $dsn, $username, and $password. See <a href="https://github.com/stf-storage/stf/tree/master/etc/config.pl">etc/config.pl</a> for a sample. If you want to customize further, please read the documentation for <a href="http://metacpan.org/dist/DBI">DBI.pm</a></p>
+
+    <h3>DB::Queue</h3>
+    <p>This value should be filled with a list of parameters that tells us how to connect to the STF Q4M instance. See DB::Master section above.</p>
+    <h3>Memcached</h3>
+    <pre>
+'Memcached' =E<gt> {
+    servers =E<gt> \@list_of_servers,
+    ... other ...
+}
+</pre>
+    <p>This specifies the Memcached servers to store your data. The values in this section are directly passed to <a href="http://metacpan.org/release/Cache-Memcached-Fast">Cache::Memcached::Fast</a>. Please see the documentation for detaills</p>
+
+    <h3>Firing it up</h3>
+
+    <p>Here's how you might start the dispatcher, along with some environment variables that you need to setup.</p>
+    <pre><code>
+# any integer value. must be unique for each dispatcher
+# you don't need to set this if you edited your config.pl to include this value
+# in Dispatcher.host_id field.
+export STF_HOST_ID=101
+
+# specify if you're using nginx as your proxy (default: 0)
+# export STF_NGINX_STYLE_REPROXY=1
+# specify if you're using a url other than /reproxy (default: /reproxy)
+# export STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_URL=/path/to/reproxy
+
+# specify if you're using TheSchwartz as your queue (default: Q4M)
+# export STF_QUEUE_TYPE=Schwartz
+
+# specify the path to your stf root dir. (default: current directory)
+# export STF_HOME=/path/to/stf
+
+plackup -a /path/to/dispatcher.psgi
+</code></pre>
+
 </div>
 </div>
 
