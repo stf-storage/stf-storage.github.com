@@ -8,12 +8,10 @@ layout: default
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2>Typical Setup</h2>
     </div>
-</div>
-<div class="span8">
     <ul class="media-grid">
     <li><img class="thumbnail" src="stf-setup.png" width="400" height="300"/></li>
     </ul>
@@ -21,12 +19,10 @@ layout: default
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2>MySQL</h2>
     </div>
-<div>
-<div class="span8">
     <p>STF requires MySQL 5.x (but please see the section about <a href="#q4m">Q4M</a> before installing MySQL &gt; 5.1).</p>
     <p>All of the data except for the actual object content will be stored in this MySQL, so you should be careful to tune it and give it ample storage.</p>
 
@@ -35,12 +31,10 @@ layout: default
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2 id="queue">Job Queues</h2>
     </div>
-</div>
-<div class="span8">
     <p>STF uses a queue to communicate with the backend workers. You can currently choose between Q4M and TheSchwartz for this. For very high-load systems, you may want to choose Q4M (but I'm only saying that because I haven't used TheSchwartz in a real production STF deployment)</p>
     <h3 id="q4m">Q4M</h3>
     <p>Q4M (<a href="http://q4m.github.com">http://q4m.github.com</a>) is a MySQL storage engine that allows you to use it as a fast, robust queue.</p>
@@ -66,12 +60,10 @@ plackup -a dispatcher.psgi
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2>Dispatcher Proxy</h2>
     </div>
-</div>
-<div class="span8">
     <p>STF currently relies on reproxying via X-Reproxy-URL, so you need to setup an HTTP proxy server for the dispatcher. Any proxy that can handle X-Reproxy-URL should do, but currently we only use Apache (with mod_reproxy) in production, and there is a version that runs on <a href="http://dotcloud.com">dotCloud</a>, <a href="https://github.com/stf-storage/stf-on-cloud">stf-on-cloud</a>, which uses nginx.</p>
 
     <h3>Apache</h3>
@@ -107,12 +99,10 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2>Workers</h2>
     </div>
-</div>
-<div class="span8">
     <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
     <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
     <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
@@ -120,10 +110,8 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
-</div>
-<div class="span8">
         <h2>Storage</h2>
     </div>
     <p>Storages are just dumb HTTP servers that understand basic CRUD via HTTP GET, PUT, DELETE. STF provides you with a simple PSGI app to handle this, but if you happen to find that this is not enough, you can choose to build your own equivalent. It's not that hard.</p>
@@ -131,23 +119,19 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2>Memcached</h2>
     </div>
-</div>
-<div class="span8">
     <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
 </div>
 </div>
 
 <div class="row">
-<div class="span4">
+<div class="span12">
     <div class="page-header">
         <h2>STF Dispatcher</h2>
     </div>
-</div>
-<div class="span8">
     <p>The STF dispatcher can be configure using a regular Perl script, which can be specified either in STF::Context's constructor code, or by setting the STF_CONFIG environmental variable. If you don't specify anything, the value "etc/config.pl" will be used</p>
     <p>You only should need to change a few values:</p>
 
