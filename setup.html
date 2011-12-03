@@ -59,25 +59,40 @@ plackup -a dispatcher.psgi
 </div>
 </div>
 
+<div class="page-header">
+    <h2>Dispatcher Proxy</h2>
+</div>
 <div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>Dispatcher Proxy</h2>
+    <div class="span4">
+        <h3>Overiview</h3>
     </div>
-    <p>STF currently relies on reproxying via X-Reproxy-URL, so you need to setup an HTTP proxy server for the dispatcher. Any proxy that can handle X-Reproxy-URL should do, but currently we only use Apache (with mod_reproxy) in production, and there is a version that runs on <a href="http://dotcloud.com">dotCloud</a>, <a href="https://github.com/stf-storage/stf-on-cloud">stf-on-cloud</a>, which uses nginx.</p>
+    <div class="span8">
+        <p>STF currently relies on reproxying via X-Reproxy-URL, so you need to setup an HTTP proxy server for the dispatcher. Any proxy that can handle X-Reproxy-URL should do, but currently we only use Apache (with mod_reproxy) in production, and there is a version that runs on <a href="http://dotcloud.com">dotCloud</a>, <a href="https://github.com/stf-storage/stf-on-cloud">stf-on-cloud</a>, which uses nginx.</p>
+    </div>
+</div>
 
-    <h3>Apache</h3>
-    <p>Apache does not come with X-Reproxy-URL support. You need to install <a href="https://github.com/lestrrat/mod_reproxy">mod_reproxy</a> (which is in turn based on <a href="http://github.com/kazuho/mod_reproxy">Kazuho Oku's original version</a>)</p>
-    <p>Enable your proxy, and also set the ReproxyIgnoreHeader directive, because mod_reproxy don't support chunked encoding at the moment</p>
-    <pre>
+<div class="row">
+    <div class="span4">
+        <h3>Apache</h3>
+    </div>
+    <div class="span8">
+        <p>Apache does not come with X-Reproxy-URL support. You need to install <a href="https://github.com/lestrrat/mod_reproxy">mod_reproxy</a> (which is in turn based on <a href="http://github.com/kazuho/mod_reproxy">Kazuho Oku's original version</a>)</p>
+        <p>Enable your proxy, and also set the ReproxyIgnoreHeader directive, because mod_reproxy don't support chunked encoding at the moment</p>
+        <pre>
 Reproxy on
 ReproxyIgnoreHeader Accept-Ranges
 </pre>
-    <p>Please see <a href="https://github.com/stf-storage/stf/blob/master/misc/apache-dispatcher-proxy.sample.conf">the sample config file</a> for more details</p>
+        <p>Please see <a href="https://github.com/stf-storage/stf/blob/master/misc/apache-dispatcher-proxy.sample.conf">the sample config file</a> for more details</p>
+    </div>
+</div>
 
-    <h3>nginx</h3>
-    <p>nginx doesn't support X-Reproxy-URL natively, but it's very easy to emulate it. Simply place a config like the following in your config.</p>
-    <pre>
+<div class="row">
+    <div class="span4">
+        <h3>nginx</h3>
+    </div>
+    <div class="span8">
+        <p>nginx doesn't support X-Reproxy-URL natively, but it's very easy to emulate it. Simply place a config like the following in your config.</p>
+        <pre>
 location = "/reproxy" {
     internal;
     resolver xxx.xxx.xxx.xxx; # set up a proper resolver
@@ -85,8 +100,8 @@ location = "/reproxy" {
     proxy_pass $reproxy;
 }
 </pre>
-    <p>You also need to set the following environemnt variables for your dispatcher:</p>
-    <pre>
+        <p>You also need to set the following environemnt variables for your dispatcher:</p>
+        <pre>
 # enables X-Accel-Redirect header
 STF_NGINX_STYLE_REPROXY: 1
 
@@ -95,6 +110,7 @@ STF_NGINX_STYLE_REPROXY: 1
 # then you don't need to set it.
 STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </pre>
+    </div>
 </div>
 </div>
 
@@ -106,7 +122,6 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
     <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
     <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
-</div>
 </div>
 
 <div class="row">
