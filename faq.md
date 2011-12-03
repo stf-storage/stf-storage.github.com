@@ -7,7 +7,7 @@ layout: default
 
 ## Where did the name STF come from?
 
-STF stands for "<a href="http://en.wikipedia.org/wiki/Professional_wrestling_holds#STF">Stepover Toehold Facelock</a>". The original authors liked pro-wrestling, and hence the name.
+STF stands for "<a href="http://en.wikipedia.org/wiki/Professional_wrestling_holds#STF">Stepover Toehold Facelock</a>". The original authors liked pro-wrestling, and hence the name. It may also mean "STorage Farm"
 
 ## Who runs STF ?
 
