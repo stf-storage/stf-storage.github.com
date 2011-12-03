@@ -3,21 +3,25 @@ title: Download
 layout: default
 ---
 
-<h1>Download STF</h1>
+<div class="page-header">
+    <h1>Get STF</h1>
+</div>
 
+<h2>STF</h2>
 <div class="row">
 <div class="span12">
-    <h2>STF</h2>
     <p>STF is the reference implementation. Written in Perl, it serves billions of objects on commodity servers</p>
     <p>TODO: Create a carton-bundled, ready to run tarball</p>
     <ul>
         <li>github: <a href="https://github.com/stf-storage/stf">https://github.com/stf-storage/stf</a></li>
-        <li>CPAN: Coming soon!<li>
+        <li>CPAN: Coming soon!</li>
     </ul>
 </div>
+</div>
 
+<h2>STF::Dispatcher::PSGI</h2>
+<div class="row">
 <div class="span12">
-    <h2>STF::Dispatcher::PSGI</h2>
     <p>STF::Dispatcher::PSGI implements the STF <em>interface</em>. While <a href="/protocol.html">the protocol</a> is mainly simple HTTP, there are a few things you need to parse from the HTTP requests. They are simple enough, but annoying to have to reimplement every time you want to create a new STF server or a dummy STF server for testing. This module abstracts that part away.</p>
     <p>It also comes with STF::Dispatcher::Test, which does the basic interface testing.</p>
     <ul>
@@ -25,14 +29,27 @@ layout: default
         <li>CPAN: <a href="http://metacpan.org/dist/STF-Dispatcher-PSGI">STF-Dispatcher-PSGI</a></li>
     </ul>
 </div>
+</div>
 
+<h2>stf-on-cloud</h2>
+<div class="row">
 <div class="span12">
-    <h2>Net::STF::Client</h2>
+    <p>stf-on-cloud is an experimental setup to run STF on dotCloud platform.</p>
+    <ul>
+        <li>github: <a href="https://github.com/stf-storage/stf-on-cloud">https://github.com/stf-storage/stf-on-cloud</a></li>
+    </ul>
+</div>
+</div>
+
+<h2>Net::STF::Client</h2>
+<div class="row">
+<div class="span12">
     <p>Net::STF::Client implements the client side of STF. Built upon Furl::HTTP, it gives you a fast and easy way to access your STF servers</p>
     <ul>
         <li>github: <a href="https://github.com/stf-storage/net-stf-client">https://github.com/stf-storage/net-stf-client</a></li>
         <li>CPAN: <a href="http://metacpan.org/dist/Net-STF-Client">Net-STF-Client</a></li>
     </ul>
+</div>
 </div>
 
 </div>
