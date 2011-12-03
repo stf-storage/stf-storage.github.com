@@ -18,16 +18,15 @@ layout: default
 </div>
 </div>
 
-<div class="row">
-<div class="span12">
-    <div class="page-header">
-        <h2>MySQL</h2>
-    </div>
-    <p>STF requires MySQL 5.x (but please see the section about <a href="#q4m">Q4M</a> before installing MySQL &gt; 5.1).</p>
-    <p>All of the data except for the actual object content will be stored in this MySQL, so you should be careful to tune it and give it ample storage.</p>
-
-    <p>Once you have a MySQL server running, create a new database and set it up using stf.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf.sql">https://github.com/stf-storage/stf/misc/stf.sql</a>)</p>
+<div class="page-header">
+    <h2>MySQL</h2>
 </div>
+<div class="row">
+    <div class="span12">
+        <p>STF requires MySQL 5.x (but please see the section about <a href="#q4m">Q4M</a> before installing MySQL &gt; 5.1).</p>
+        <p>All of the data except for the actual object content will be stored in this MySQL, so you should be careful to tune it and give it ample storage.</p>
+        <p>Once you have a MySQL server running, create a new database and set it up using stf.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf.sql">https://github.com/stf-storage/stf/misc/stf.sql</a>)</p>
+    </div>
 </div>
 
 <div class="page-header">
@@ -51,7 +50,6 @@ layout: default
         <p>The Q4M instance typically requires much less resources than the main backend MySQL DB, so unless your traffic is extremely large it can be hosted in the same machine as other services (see diagram in "Typical Setup")</p>
         <p>Once you have a Q4M server running, create a new database and set it up using stf_queue.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf_q4m.sql">https://github.com/stf-storage/stf/misc/stf_q4m.sql</a>)</p>
     </div>
-    <hr />
 </div>
 
 <div class="row">
@@ -137,6 +135,7 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
     <p>Workers can be setup pretty much anywhere it can access the Q4M queue. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
     <p>The number of workers to activate also depends on your setup. Just make sure that you have enough workers to handle your queue so the queue does not overflow.</p>
+</div>
 </div>
 
 <div class="row">
