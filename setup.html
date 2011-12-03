@@ -63,19 +63,19 @@ plackup -a dispatcher.psgi
     <h2>Dispatcher Proxy</h2>
 </div>
 <div class="row">
-    <div class="span4">
+    <div class="span2">
         <h3>Overiview</h3>
     </div>
-    <div class="span8">
+    <div class="span10">
         <p>STF currently relies on reproxying via X-Reproxy-URL, so you need to setup an HTTP proxy server for the dispatcher. Any proxy that can handle X-Reproxy-URL should do, but currently we only use Apache (with mod_reproxy) in production, and there is a version that runs on <a href="http://dotcloud.com">dotCloud</a>, <a href="https://github.com/stf-storage/stf-on-cloud">stf-on-cloud</a>, which uses nginx.</p>
     </div>
 </div>
 
 <div class="row">
-    <div class="span4">
+    <div class="span2">
         <h3>Apache</h3>
     </div>
-    <div class="span8">
+    <div class="span10">
         <p>Apache does not come with X-Reproxy-URL support. You need to install <a href="https://github.com/lestrrat/mod_reproxy">mod_reproxy</a> (which is in turn based on <a href="http://github.com/kazuho/mod_reproxy">Kazuho Oku's original version</a>)</p>
         <p>Enable your proxy, and also set the ReproxyIgnoreHeader directive, because mod_reproxy don't support chunked encoding at the moment</p>
         <pre>
@@ -87,10 +87,10 @@ ReproxyIgnoreHeader Accept-Ranges
 </div>
 
 <div class="row">
-    <div class="span4">
+    <div class="span2">
         <h3>nginx</h3>
     </div>
-    <div class="span8">
+    <div class="span10">
         <p>nginx doesn't support X-Reproxy-URL natively, but it's very easy to emulate it. Simply place a config like the following in your config.</p>
         <pre>
 location = "/reproxy" {
