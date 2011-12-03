@@ -15,7 +15,7 @@ layout: default
 <div class="row">
 <div class="span12">
     <h2>MySQL</h2>
-    <p>STF requires MySQL 5.x (but please see the section about <a href="#q4m">Q4M</a> before installing MySQL E<gt> 5.1).</p>
+    <p>STF requires MySQL 5.x (but please see the section about <a href="#q4m">Q4M</a> before installing MySQL &gt; 5.1).</p>
     <p>All of the data except for the actual object content will be stored in this MySQL, so you should be careful to tune it and give it ample storage.</p>
 
     <p>Once you have a MySQL server running, create a new database and set it up using stf.sql (e.g. <a href="https://github.com/stf-storage/stf/misc/stf.sql">https://github.com/stf-storage/stf/misc/stf.sql</a>)</p>
@@ -117,7 +117,7 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 
     <h3>DB::Master / DB::Slave</h3>
     <pre>
-'DB::Master' =E<gt> [
+'DB::Master' =&gt; [
     $dsn,
     $username,
     $passsword,
@@ -130,8 +130,8 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
     <p>This value should be filled with a list of parameters that tells us how to connect to the STF Q4M instance. See DB::Master section above.</p>
     <h3>Memcached</h3>
     <pre>
-'Memcached' =E<gt> {
-    servers =E<gt> \@list_of_servers,
+'Memcached' =&gt; {
+    servers =&gt; \@list_of_servers,
     ... other ...
 }
 </pre>
