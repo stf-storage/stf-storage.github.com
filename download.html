@@ -41,7 +41,7 @@ layout: default
             var license_id = "#license-" + lang;
             $(tab_id).click( function() {
                 $("#tab-license li").each( function(i, e) {
-                    $(e).parent().removeClass("active");
+                    $(e).removeClass("active");
                 } );
                 $(tab_id).parent().addClass("active");
                 $("#license blockquote").each( function(i, e) {
