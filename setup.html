@@ -72,6 +72,7 @@ layout: default
 
         <p>DO NOT FORGET to tell STF where your queue is: You must specify how to connect to your queue by either specifying it in environment variables or by editing your config file:</p>
         <pre>
+# You need to do the same for <a href="#workers">workers, too</a>!
 env STF_QUEUE_DSN="dbi:mysql:dbname=stf_queue" \
     STF_QUEUE_USERNAME=foobar \
     STF_QUEUE_USERNAME=password \
