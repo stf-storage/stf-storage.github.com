@@ -312,6 +312,10 @@ export STF_HOST_ID=101
 # specify the path to your stf root dir. (default: current directory)
 # export STF_HOME=/path/to/stf
 
+# set to true if you're NOT running behind a X-Reproxy-URL capable
+# reverse proxy. ONLY USE THIS FOR TESTING
+# export USE_PLACK_REPROXY=1
+
 plackup -a /path/to/dispatcher.psgi
 </pre>
     </div>
