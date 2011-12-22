@@ -358,6 +358,12 @@ plackup -a /path/to/dispatcher.psgi
             <td>The UNIQUE host id for each dispatcher. This is used to generate a unique ID for buckets and objects, so you MUST provide a unique integer value for each of your dispatchers. If you don't specify a value in Dispatcher.host_id in your config.pl this variable is <strong>required</strong></td>
         </tr>
         <tr>
+            <td>USE_PLACK_REPROXY</td>
+            <td>Dispatcher</td>
+            <td>false</td>
+            <td>When set to a true value, will automatically load Plack::Middleware::Reproxy::Furl to do the reproxying for you. This is <strong>required</strong> if you're not running behind a X-Reproxy-URL capable reverse proxy. <strong>DO NOT USE</strong> in production environments.</td>
+        </tr>
+        <tr>
             <td>STF_NGINX_STYLE_PROXY</td>
             <td>Dispatcher</td>
             <td>false</td>
