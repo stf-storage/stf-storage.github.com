@@ -72,6 +72,7 @@ layout: default
 
         <p>DO NOT FORGET to tell STF where your queue is: You must specify how to connect to your queue by either specifying it in environment variables or by editing your config file:</p>
         <pre>
+# 1) If you're using environment variables
 # You need to do the same for <a href="#workers">workers, too</a>!
 env STF_QUEUE_DSN="dbi:mysql:dbname=stf_queue" \
     STF_QUEUE_USERNAME=foobar \
@@ -79,6 +80,7 @@ env STF_QUEUE_DSN="dbi:mysql:dbname=stf_queue" \
     plackup -a etc/dispatcher.psgi
 </pre>
         <pre>
+# 2) OR, if you're editing the config file
 'DB::Queue' =&gt; [
     "dbi:mysql:dbname=stf_queue",
     "foobar",
@@ -91,8 +93,7 @@ env STF_QUEUE_DSN="dbi:mysql:dbname=stf_queue" \
     }
 ],
 </pre>
-   
-    
+    <p>You only need to do one of the above</p>
     </div>
 </div>
 <div class="row">
