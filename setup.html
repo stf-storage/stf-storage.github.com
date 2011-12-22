@@ -173,6 +173,20 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 </div>
 
 <div class="page-header">
+    <h2 id="admin">STF Admin Interface</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>STF comes with a primitive admin interface. Boot it up by using the etc/admin.psgi PSGI application</p>
+        <pre>
+# Note: pick a real port. 9000 is just a random number I came up with right now
+plackup -p 9000 -a etc/admin.psgi
+</pre>
+        <p>Then you should be able to access the admin interface at http://127.0.0.1:9000/</p>
+    </div>
+</div>
+
+<div class="page-header">
     <h2 id="workers">STF Workers</h2>
 </div>
 <div class="row">
