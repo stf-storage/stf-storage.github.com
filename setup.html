@@ -69,6 +69,29 @@ layout: default
     </div>
     <div class="span10">
         <p>STF uses a queue to communicate with the backend workers. You can currently choose between Q4M and TheSchwartz for this. For very high-load systems, you may want to choose Q4M (but I'm only saying that because I haven't used TheSchwartz in a real production STF deployment)</p>
+
+        <p>DO NOT FORGET to tell STF where your queue is: You must specify how to connect to your queue by either specifying it in environment variables or by editing your config file:</p>
+        <pre>
+env STF_QUEUE_DSN="dbi:mysql:dbname=stf_queue" \
+    STF_QUEUE_USERNAME=foobar \
+    STF_QUEUE_USERNAME=password \
+    plackup -a etc/dispatcher.psgi
+</pre>
+        <pre>
+'DB::Queue' =&gt; [
+    "dbi:mysql:dbname=stf_queue",
+    "foobar",
+    "password",
+    {
+        AutoCommit =&gt; 1,
+        AutoInactiveDestroy =&gt; 1,
+        RaiseError =&gt; 1,
+        mysql_enable_utf8 =&gt; 1,
+    }
+],
+</pre>
+   
+    
     </div>
 </div>
 <div class="row">
