@@ -196,9 +196,17 @@ STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
 
         <p>STF comes with a simple storage app you can easily deploy:</p>
         <pre>
+# Note: pick a real port. 8888 is just a random number I came up with right now
 export STF_STORAGE_ROOT=/path/to/storage
-plackup -a $STF_HOME/etc/storage.psgi
+plackup -a $STF_HOME/etc/storage.psgi -p 8888
+
 </pre>
+
+        <p>You need to tell the STF dispatcher how to access this storage by inserting a row in the "storage" table</p>
+        <pre>
+INSERT INTO storage (id, uri, mode) VALUES ( 1, "http://127.0.0.1:8888", 1 );
+</pre>
+        <p>Alternatively, you can access this information from the admin interface (XXX need to write about the admin interface)</p>
     </div>
 </div>
 
