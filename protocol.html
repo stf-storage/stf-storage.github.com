@@ -185,5 +185,19 @@ POST /mybucket/foo/bar/baz/myobject.png HTTP/1.0
             <p>If the specified bucket does not exist, HTTP Status 500 is returned.</p>
         </div>
     </div>
+    <div class="row">
+        <div class="span2">
+            <span style="font-weight: bold">Rename an Object</span>
+        </div>
+        <div class="span10">
+            <p>To rename an object, a MOVE request should be sent.</p>
+            <pre>
+MOVE /mybucket/foo/bar/baz/myobject.png HTTP/1.0
+X-STF-Move-Destination: /mybucket/newpath
+</pre>
+            <p>If the operation is successfully created, HTTP Status 201 is returned.</p>
+            <p>Objects can be renamed between buckets, as well.</p>
+        </div>
+    </div>
 </div>
 </div>
