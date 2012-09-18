@@ -1,0 +1,461 @@
+---
+title: Setup
+layout: default
+---
+
+<style type="text/css">
+<!--
+    span.subh {
+        font-weight: bold
+    }
+-->
+</style>
+
+<div class="page-header">
+    <h1>Setting Up STF</h1>
+</div>
+
+<h2>Table of Contents</h2>
+<div class="row">
+    <div class="span12">
+    <ul>
+        <li><a href="#typical">Typical Setup</a></li>
+        <li><a href="#mysql">MySQL</a></li>
+        <li><a href="#queue">Job Queue</a>
+            <ul>
+                <li><a href="#q4m">Q4M</a></li>
+                <li><a href="#schwartz">TheSchwartz</a></li>
+            </ul>
+        </li>
+        <li><a href="#dispatcher-proxy">Dispatcher Proxy</a></li>
+        <li><a href="#memcached">Memcached</a></li>
+        <li><a href="#admin">STF Admin Interface</a></li>
+        <li><a href="#workers">STF Workers</a></li>
+        <li><a href="#storage">STF Storage</a></li>
+        <li><a href="#dispatcher">STF Dispatcher</a></li>
+        <li><a href="#environment">Environment Variables</a></li>
+    </ul>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="typical">Typical Setup</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <ul class="media-grid">
+            <li><a href="#"><img class="thumbnail" src="stf-setup.png" width="400" height="300"/></a></li>
+        </ul>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="mysql">MySQL</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>STF requires MySQL 5.x (but please see the section about <a href="#q4m">Q4M</a> before installing MySQL &gt; 5.1).</p>
+        <p>All of the data except for the actual object content will be stored in this MySQL, so you should be careful to tune it and give it ample storage.</p>
+        <p>Once you have a MySQL server running, create a new database and set it up using stf.sql (e.g. <a href="https://github.com/stf-storage/stf/blob/master/misc/stf.sql">https://github.com/stf-storage/stf/blob/master/misc/stf.sql</a>)</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="queue">Job Queue</h2>
+</div>
+<div class="row">
+    <div class="span2">
+        <span class="subh">Overview</span>
+    </div>
+    <div class="span10">
+        <p>STF uses a queue to communicate with the backend workers. You can currently choose between the following tools for this:</p>
+        <ul>
+            <li><a href="http://q4m.github.com">Q4M</a> (currently the most used and therefore recommended)</li>
+            <li><a href="http://metacpan.org/module/TheSchwartz">TheSchwartz</a></li>
+            <li><a href="https://github.com/defunkt/resque">Resque</a></li>
+            <li><a href="http://redis.io">Redis</a></li>
+        </ul>
+        <p>As of this writing, Q4M has the best track record used for high-load systems. Redis/Resque have been tested, but has not been used in the wild yet (as far as I know)</p>
+
+        <p>DO NOT FORGET to tell STF where your queue is: You must specify how to connect to your queue by either specifying it in environment variables or by editing your config file:</p>
+        <pre>
+# 1) Using environment variables
+#    (You need to do the same for <a href="#workers">workers, too</a>!)
+
+# <strong>Q4M/TheSchwartz</strong>
+env STF_QUEUE_DSN="dbi:mysql:dbname=stf_queue" \
+    STF_QUEUE_USERNAME=foobar \
+    STF_QUEUE_USERNAME=password \
+    plackup -a etc/dispatcher.psgi
+
+# <strong>Redis/Resque</strong>
+env STF_REDIS_HOSTPORT="redis.example.com:9999" \
+    plackup -a etc/dispatcher.psgi
+</pre>
+        <pre>
+# 2) Using config file:
+
+# <strong>Q4M/TheSchwartz</strong>
+'DB::Queue' =&gt; [
+    "dbi:mysql:dbname=stf_queue",
+    "foobar",
+    "password",
+    {
+        AutoCommit =&gt; 1,
+        AutoInactiveDestroy =&gt; 1,
+        RaiseError =&gt; 1,
+        mysql_enable_utf8 =&gt; 1,
+    }
+]
+
+# <strong>Resque</strong>
+'Resque' =&gt; {
+    redis => "redis.example.com:9999"
+}
+
+# <strong>Redis</strong>
+'Redis' =&gt; {
+    server => "redis.example.com:9999",
+    ... other opts ...
+}
+</pre>
+    </div>
+</div>
+<div class="row">
+    <div class="span2">
+        <span class="subh" id="q4m">Q4M</span>
+    </div>
+    <div class="span10">
+        <p>Q4M (<a href="http://q4m.github.com">http://q4m.github.com</a>) is a MySQL storage engine that allows you to use it as a fast, robust queue.</p>
+        <p>To install Q4M, you need to have MySQL 5.1 available (if you're installing Q4M from source, you will also need the MySQL source code).</p>
+        <p>The Q4M instance typically requires much less resources than the main backend MySQL DB, so unless your traffic is extremely large it can be hosted in the same machine as other services (see diagram in "Typical Setup")</p>
+        <p>Once you have a Q4M server running, create a new database and set it up using stf_queue.sql (e.g. <a href="https://github.com/stf-storage/stf/blob/master/misc/stf.sql">https://github.com/stf-storage/stf/blob/master/misc/stf.sql</a>)</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span2">
+        <span class="subh" id="schwartz">TheSchwartz</span>
+    </div>
+    <div class="span10">
+        <p>TheSchwartz (<a href="http://metacpan.org/release/TheSchwartz">CPAN</a>) is a Job Queue written by Six Apart Ltd., which uses MySQL as its backend. Unlike Q4M, TheSchwartz does not require you to install a custom storage engine, so if you can't install Q4M, this may be a good choice for you.</p>
+        <p>To install TheSchwartz, simply install it from CPAN:</p>
+        <pre><a href="https://metacpan.org/module/cpanm">cpanm</a> TheSchwartz</pre>
+        <p>Once you have installed TheSchartz, create a new database and set it up using stf_schwartz.sql (e.g. <a href="https://github.com/stf-storage/stf/blob/master/misc/stf_schwartz.sql">https://github.com/stf-storage/stf/blob/master/misc/stf_schwartz.sql</a>)</p>
+        <p>You also need to tell your workers and your dispatchers that you're using TheSchwartz as your backend by setting STF_QUEUE_TYPE to "Schwartz":</p>
+        <pre>
+export STF_QUEUE_TYPE=Schwartz
+plackup -a dispatcher.psgi
+</pre>
+        <p>and</p>
+        <pre>
+export STF_QUEUE_TYPE=Schwartz
+./bin/stf-worker
+</pre>
+        <p>See <a href="#environment">Environment Variables</a> for details on STF_QUEUE_TYPE</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="dispatcher-proxy">Dispatcher Proxy</h2>
+</div>
+<div class="row">
+    <div class="span2">
+        <span class="subh">Overiview</span>
+    </div>
+    <div class="span10">
+        <p>STF currently relies on reproxying via X-Reproxy-URL, so you need to setup an HTTP proxy server for the dispatcher. Any proxy that can handle X-Reproxy-URL should do, but currently we only use Apache (with mod_reproxy) in production, and there is a version that runs on <a href="http://dotcloud.com">dotCloud</a>, <a href="https://github.com/stf-storage/stf-on-dotcloud">stf-on-dotcloud</a>, which uses nginx.</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span2">
+        <span class="subh">Apache</span>
+    </div>
+    <div class="span10">
+        <p>Apache does not come with X-Reproxy-URL support. You need to install <a href="https://github.com/lestrrat/mod_reproxy">mod_reproxy</a> (which is in turn based on <a href="http://github.com/kazuho/mod_reproxy">Kazuho Oku's original version</a>)</p>
+        <p>Enable your proxy, and also set the ReproxyIgnoreHeader directive, because mod_reproxy don't support chunked encoding at the moment</p>
+        <pre>
+Reproxy on
+ReproxyIgnoreHeader Accept-Ranges
+</pre>
+        <p>Please see <a href="https://github.com/stf-storage/stf/blob/master/misc/apache-dispatcher-proxy.sample.conf">the sample config file</a> for more details</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span2">
+        <span class="subh">nginx</span>
+    </div>
+    <div class="span10">
+        <p>nginx doesn't support X-Reproxy-URL natively, but it's very easy to emulate it. Simply place a config like the following in your config.</p>
+        <pre>
+location = "/reproxy" {
+    internal;
+    resolver xxx.xxx.xxx.xxx; # set up a proper resolver
+    set $reproxy $upstream_http_x_reproxy_url;
+    proxy_pass $reproxy;
+}
+</pre>
+        <p>You also need to set the following environemnt variables for your dispatcher:</p>
+        <pre>
+# enables X-Accel-Redirect header
+STF_NGINX_STYLE_REPROXY: 1
+
+# sets the internal redirect url. should match what you put in
+# in your nginx.conf. If you configured it to be "/reproxy",
+# then you don't need to set it.
+STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_HEADER: /reproxy
+</pre>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="memcached">Memcached</h2>
+</div>
+<div class="row">
+    <div class="span2">
+        <span class="subh">Overview</span>
+    </div>
+    <div class="span10">
+        <p>STF uses <a href="http://memcached.org">memcached</a> to boost performance. Typically you can install these on the same machine as the dispatchers</p>
+        <p>Simply start as many instances as you can, and list the server:port values in the Memcached section of config.pl</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="admin">STF Admin Interface</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>STF comes with a primitive admin interface. Boot it up by using the etc/admin.psgi PSGI application</p>
+        <pre>
+# Note: pick a real port. 9000 is just a random number I came up with right now
+plackup -p 9000 -a etc/admin.psgi
+</pre>
+        <p>Then you should be able to access the admin interface at http://127.0.0.1:9000/</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="workers">STF Workers</h2>
+</div>
+<div class="row">
+    <div class="span12">
+        <p>Workers do a bunch of things, including keeping an eye out on the object's replicas, deleting objects and buckets, and other assorted goodies.</p>
+        <p>Workers can be setup pretty much anywhere it can access the databases. In our diagram from "Typical Setup", we host them on the dispatcher machines, but it's your call.</p>
+        <p>The number of workers to activate is configurable from the STF admin interface. Since version 2.0, the workers do an automatic distribution of instances amongst all the members, so all you need to do here is to set the total number of workers for the entire system. So suppose you deploy 3 worker instances and set the total number of RepairObject workers to 15, then each worker instance will spawn 5 instances.</p>
+        <p>The actual number of workers required depends on your load/setup/number of objects. Just make sure that you have enough workers to handle your queue so the queue does not overflow. It is highly recommended that you monitor the number of jobs in the queue via a monitoring tool like <a href="http://kazeburo.github.com/GrowthForecast/">GrowthForecast</a></p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="storage">STF Storage</h2>
+</div>
+<div class="row">
+    <div class="span2">
+        <span class="subh">Overview</span>
+    </div>
+
+    <div class="span10">
+        <p>Storages are just dumb HTTP servers that understand basic CRUD via HTTP GET, PUT, DELETE. STF provides you with a simple PSGI app to handle this, but if you happen to find that this is not enough, you can choose to build your own equivalent. It's not that hard.</p>
+
+        <p>STF comes with a simple storage app you can easily deploy:</p>
+        <pre>
+# Note: pick a real port. 8888 is just a random number I came up with right now
+export STF_STORAGE_ROOT=/path/to/storage
+plackup -a $STF_HOME/etc/storage.psgi -p 8888
+
+</pre>
+
+        <p>You need to tell the STF dispatcher how to access this storage by inserting a row in the "storage" table</p>
+        <pre>
+INSERT INTO storage (id, uri, mode) VALUES ( 1, "http://127.0.0.1:8888", 1 );
+</pre>
+        <p>Alternatively, you can access this information from <a href="#admin">the admin interface</a>.</p>
+    </div>
+</div>
+
+<div class="page-header">
+    <h2 id="dispatcher">STF Dispatcher</h2>
+</div>
+<div class="row">
+    <div class="span2"><span class="subh">Overview</span></div>
+    <div class="span10">
+        <p>The STF dispatcher needs to be configured so that it knows what kind of environment it's running in. All configuration is ultimately in a configuration file, but certain switches that you might want to toggle on/off easily can be specified via environment variables (you can control how this is reflected if you provide your own config script, though. see below)</p>
+    </div>
+</div>
+<div class="row">
+    <div class="span2"><span class="subh">config.pl</span></div>
+    <div class="span10">
+        <p>The configuration is stored in a regular Perl script file. By default <a href="https://github.com/stf-storage/stf/blob/master/etc/config.pl">etc/config.pl</a> is used. The default config.pl provided with STF should be enough for most purposes, but you can always customize it however you like -- it's just a Perl script!</p>
+        <p>If you provide your own config script, be sure to check out what environment variables you're using -- the environment variables described in this document assumes that you're using the default config.pl file</p>
+
+        <p>If you're using the default config.pl, you only should need to change a few values:</p>
+        <h4>DB::Master</h4>
+        <pre>
+'DB::Master' =&gt; [
+    $dsn,
+    $username,
+    $passsword,
+    \%options,
+]
+</pre>
+        <p>This value should be filled with a list of parameters that tells us how to connect to the STF database. Normally you only need to change $dsn, $username, and $password. See <a href="https://github.com/stf-storage/stf/tree/master/etc/config.pl">etc/config.pl</a> for a sample. If you want to customize further, please read the documentation for <a href="http://metacpan.org/dist/DBI">DBI.pm</a></p>
+
+        <h4>DB::Queue</h4>
+        <p>This value should be filled with a list of parameters that tells us how to connect to the STF Q4M (or TheSchartz database) instance. See DB::Master section above.</p>
+
+        <h4>Memcached</h4>
+        <pre>
+'Memcached' =&gt; {
+    servers =&gt; \@list_of_servers,
+    ... other ...
+}
+</pre>
+        <p>This specifies the Memcached servers to store your data. The values in this section are directly passed to <a href="http://metacpan.org/release/Cache-Memcached-Fast">Cache::Memcached::Fast</a>. Please see the documentation for detaills</p>
+    </div>
+</div>
+
+<div class="row">
+    <div class="span2"><span class="subh">Firing it up</span></div>
+    <div class="span10">
+        <p>Here's how you might start the dispatcher, along with some environment variables that you need to setup.</p>
+        <pre>
+# any integer value. must be unique for each dispatcher
+# you don't need to set this if you edited your config.pl to include this value
+# in Dispatcher.host_id field.
+export STF_HOST_ID=101
+
+# specify if you're using nginx as your proxy (default: 0)
+# export STF_NGINX_STYLE_REPROXY=1
+# specify if you're using a url other than /reproxy (default: /reproxy)
+# export STF_NGINX_STYLE_REPROXY_ACCEL_REDIRECT_URL=/path/to/reproxy
+
+# specify if you're using TheSchwartz as your queue (default: Q4M)
+# export STF_QUEUE_TYPE=Schwartz
+
+# specify the path to your stf root dir. (default: current directory)
+# export STF_HOME=/path/to/stf
+
+# set to true if you're NOT running behind a X-Reproxy-URL capable
+# reverse proxy. ONLY USE THIS FOR TESTING
+# export USE_PLACK_REPROXY=1
+
+plackup -a /path/to/dispatcher.psgi
+</pre>
+    </div>
+</div>
+
+<section id="environment">
+<div class="page-header">
+    <h2>Environment Variables</h2>
+</div>
+<div class="row">
+<div class="span12">
+    <table class="zebra-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Applies to</th>
+            <th>Default Value</th>
+            <th>Description</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>STF_HOME</td>
+            <td>All</td>
+            <td>Current Directory</td>
+            <td>Path to the STF installation</td>
+        </tr>
+        <tr>
+            <td>STF_DEBUG</td>
+            <td>All</td>
+            <td>false</td>
+            <td>Set to 1 if you would like to see debug output from STF</td>
+        </tr>
+        <tr>
+            <td>STF_TIMER</td>
+            <td>All</td>
+            <td>false</td>
+            <td>Set to 1 if you would like to see timers measuring STF performance</td>
+        </tr>
+        <tr>
+            <td>STF_HOST_ID</td>
+            <td>Dispatcher</td>
+            <td>(null)</td>
+            <td>The UNIQUE host id for each dispatcher. This is used to generate a unique ID for buckets and objects, so you MUST provide a unique integer value for each of your dispatchers. If you don't specify a value in Dispatcher.host_id in your config.pl this variable is <strong>required</strong></td>
+        </tr>
+        <tr>
+            <td>USE_PLACK_REPROXY</td>
+            <td>Dispatcher</td>
+            <td>false</td>
+            <td>When set to a true value, will automatically load Plack::Middleware::Reproxy::Furl to do the reproxying for you. This is <strong>required</strong> if you're not running behind a X-Reproxy-URL capable reverse proxy. <strong>DO NOT USE</strong> in production environments.</td>
+        </tr>
+        <tr>
+            <td>STF_NGINX_STYLE_PROXY</td>
+            <td>Dispatcher</td>
+            <td>false</td>
+            <td>When set to a true value, will include X-Accel-Redirect HTTP header in the dispatcher response for GET requests.</td>
+        </tr>
+        <tr>
+            <td style="font-size: 0.7em">STF_NGINX_STYLE_PROXY_ACCEL_REDIRECT_URL</td>
+            <td>Dispatcher</td>
+            <td>/reproxy</td>
+            <td>The URL that is configured to process the reproxying.</td>
+        </tr>
+        <tr>
+            <td>STF_MYSQL_DSN</td>
+            <td>Dispatcher/Worker</td>
+            <td>dbi:mysql:dbname=stf</td>
+            <td>DBI-style connect string for your MySQL (main) database.</td>
+        </tr>
+        <tr>
+            <td>STF_MYSQL_USERNAME</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style username for your MySQL (main) database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_MYSQL_PASSWORD</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style password for your MySQL (main) database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_TYPE</td>
+            <td>Dispatcher/Worker</td>
+            <td>Q4M</td>
+            <td>The type of job queue to use. By default Q4M is used. specify "Schwartz" to use TheSchwartz. See also: STF_QUEUE_DSN, STF_QUEUE_USERNAME, STF_QUEUE_PASSWORD</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_DSN</td>
+            <td>Dispatcher/Worker</td>
+            <td style="font-size: 0.7em">dbi:mysql:dbname=stf_queue</td>
+            <td>DBI-style connect string for your queue database.</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_USERNAME</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style username for your queue database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_QUEUE_PASSWORD</td>
+            <td>Dispatcher/Worker</td>
+            <td>root</td>
+            <td>DBI-style password for your queue database (maybe omitted if specified in DSN).</td>
+        </tr>
+        <tr>
+            <td>STF_STORAGE_ROOT</td>
+            <td>Storage</td>
+            <td>(null)</td>
+            <td>The root directory where files should be stored. Required.</td>
+        </tr>
+    </table>
+</div>
+</section>
+
+</div>
+
